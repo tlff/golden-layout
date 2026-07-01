@@ -234,7 +234,7 @@ export class ComponentItem extends ContentItem {
 
     /** @internal */
     private updateNodeSize(force: boolean): void {
-        if (this.element.style.display !== 'none') {
+        if (!this.element.classList.contains('gl-hidden')) {
             // Do not update size of hidden components to prevent unwanted reflows
 
             const { width, height } = getElementWidthAndHeight(this.element);

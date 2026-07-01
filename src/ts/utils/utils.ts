@@ -87,10 +87,23 @@ export function getElementWidthAndHeight(element: HTMLElement): WidthAndHeight {
 
 /** @internal */
 export function setElementDisplayVisibility(element: HTMLElement, visible: boolean): void {
+    // 用 className 标志可见性，并用 off-screen 定位替代 style.display='none'。
+    // 原因：Chromium 合成器在 display:none 的 iframe + WebGL canvas 路径上会死锁，
+    // 导致切 tab 时整个 tab 卡死（参考 F:/vite-project/排查记录-viser-iframe-display-none-卡死.md）。
+    // 通过把元素移到屏外并停用交互，绕开 Chromium 的 display:none 处理路径。
+    element.classList.toggle('gl-hidden', !visible);
     if (visible) {
-        element.style.display = '';
+        element.style.removeProperty('position');
+        element.style.removeProperty('left');
+        element.style.removeProperty('top');
+        element.style.removeProperty('pointer-events');
+        element.style.removeProperty('visibility');
     } else {
-        element.style.display = 'none';
+        element.style.position = 'absolute';
+        element.style.left = '-99999px';
+        element.style.top = '-99999px';
+        element.style.pointerEvents = 'none';
+        element.style.visibility = 'hidden';
     }
 }
 

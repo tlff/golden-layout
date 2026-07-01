@@ -562,7 +562,7 @@ export class Stack extends ComponentParentableItem {
 
     /** @internal */
     getArea(): ContentItem.Area | null {
-        if (this.element.style.display === 'none') {
+        if (this.element.classList.contains('gl-hidden')) {
             return null;
         }
 
@@ -695,7 +695,7 @@ export class Stack extends ComponentParentableItem {
 
     /** @internal */
     private updateNodeSize(): void {
-        if (this.element.style.display !== 'none') {
+        if (!this.element.classList.contains('gl-hidden')) {
             const content: WidthAndHeight = getElementWidthAndHeight(this.element);
 
             if (this._header.show) {
