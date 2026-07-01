@@ -1,38 +1,32 @@
-import { WidthAndHeight } from './types';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getErrorMessage = exports.getUniqueId = exports.removeFromArray = exports.deepExtendValue = exports.deepExtend = exports.extend = exports.ensureElementPositionAbsolute = exports.setElementDisplayVisibility = exports.getElementWidthAndHeight = exports.setElementHeight = exports.getElementHeight = exports.setElementWidth = exports.getElementWidth = exports.isDigit = exports.splitStringAtFirstNonNumericChar = exports.pixelsToNumber = exports.numberToPixels = void 0;
 /** @internal */
-export function numberToPixels(value: number): string {
+function numberToPixels(value) {
     return value.toString(10) + 'px';
 }
-
+exports.numberToPixels = numberToPixels;
 /** @internal */
-export function pixelsToNumber(value: string): number {
+function pixelsToNumber(value) {
     const numberStr = value.replace("px", "");
     return parseFloat(numberStr);
 }
-
+exports.pixelsToNumber = pixelsToNumber;
 /** @internal */
-export interface SplitStringAtFirstNonNumericCharResult {
-    numericPart: string;
-    firstNonNumericCharPart: string;
-}
-
-/** @internal */
-export function splitStringAtFirstNonNumericChar(value: string): SplitStringAtFirstNonNumericCharResult {
+function splitStringAtFirstNonNumericChar(value) {
     if (typeof value !== 'string') {
         // 非字符串时打 warn 并返回空结果，让上层走"无效数字"路径（parseSize 会抛 ConfigurationError），
         // 而不是直接 TypeError 中断整个布局。
         // 常见诱因：后端下发的 config.size 字段缺失或类型不对（例如 number 而非 string、字段为 undefined）。
-        console.warn('[golden-layout] splitStringAtFirstNonNumericChar expected string, got',
-            value === undefined ? 'undefined' : typeof value, value);
+        console.warn('[golden-layout] splitStringAtFirstNonNumericChar expected string, got', value === undefined ? 'undefined' : typeof value, value);
         return { numericPart: '', firstNonNumericCharPart: '' };
     }
     value = value.trimStart();
-
     const length = value.length;
     if (length === 0) {
-        return { numericPart: '', firstNonNumericCharPart: '' }
-    } else {
+        return { numericPart: '', firstNonNumericCharPart: '' };
+    }
+    else {
         let firstNonDigitPartIndex = length;
         let gotDecimalPoint = false;
         for (let i = 0; i < length; i++) {
@@ -41,11 +35,13 @@ export function splitStringAtFirstNonNumericChar(value: string): SplitStringAtFi
                 if (char !== '.') {
                     firstNonDigitPartIndex = i;
                     break;
-                } else {
+                }
+                else {
                     if (gotDecimalPoint) {
                         firstNonDigitPartIndex = i;
                         break;
-                    } else {
+                    }
+                    else {
                         gotDecimalPoint = true;
                     }
                 }
@@ -53,48 +49,47 @@ export function splitStringAtFirstNonNumericChar(value: string): SplitStringAtFi
         }
         const digitsPart = value.substring(0, firstNonDigitPartIndex);
         const firstNonDigitPart = value.substring(firstNonDigitPartIndex).trim();
-
         return { numericPart: digitsPart, firstNonNumericCharPart: firstNonDigitPart };
     }
 }
-
+exports.splitStringAtFirstNonNumericChar = splitStringAtFirstNonNumericChar;
 /** @internal */
-export function isDigit(char: string) {
+function isDigit(char) {
     return char >= '0' && char <= '9';
 }
-
+exports.isDigit = isDigit;
 /** @internal */
-export function getElementWidth(element: HTMLElement): number {
+function getElementWidth(element) {
     return element.offsetWidth;
 }
-
+exports.getElementWidth = getElementWidth;
 /** @internal */
-export function setElementWidth(element: HTMLElement, width: number): void {
+function setElementWidth(element, width) {
     const widthAsPixels = numberToPixels(width);
     element.style.width = widthAsPixels;
 }
-
+exports.setElementWidth = setElementWidth;
 /** @internal */
-export function getElementHeight(element: HTMLElement): number {
+function getElementHeight(element) {
     return element.offsetHeight;
 }
-
+exports.getElementHeight = getElementHeight;
 /** @internal */
-export function setElementHeight(element: HTMLElement, height: number): void {
+function setElementHeight(element, height) {
     const heightAsPixels = numberToPixels(height);
     element.style.height = heightAsPixels;
 }
-
+exports.setElementHeight = setElementHeight;
 /** @internal */
-export function getElementWidthAndHeight(element: HTMLElement): WidthAndHeight {
+function getElementWidthAndHeight(element) {
     return {
         width: element.offsetWidth,
         height: element.offsetHeight,
     };
 }
-
+exports.getElementWidthAndHeight = getElementWidthAndHeight;
 /** @internal */
-export function setElementDisplayVisibility(element: HTMLElement, visible: boolean): void {
+function setElementDisplayVisibility(element, visible) {
     // 用 className 标志可见性，并用 off-screen 定位替代 style.display='none'。
     // 原因：Chromium 合成器在 display:none 的 iframe + WebGL canvas 路径上会死锁，
     // 导致切 tab 时整个 tab 卡死（参考 F:/vite-project/排查记录-viser-iframe-display-none-卡死.md）。
@@ -106,7 +101,8 @@ export function setElementDisplayVisibility(element: HTMLElement, visible: boole
         element.style.removeProperty('top');
         element.style.removeProperty('pointer-events');
         element.style.removeProperty('visibility');
-    } else {
+    }
+    else {
         element.style.position = 'absolute';
         element.style.left = '-99999px';
         element.style.top = '-99999px';
@@ -114,20 +110,20 @@ export function setElementDisplayVisibility(element: HTMLElement, visible: boole
         element.style.visibility = 'hidden';
     }
 }
-
+exports.setElementDisplayVisibility = setElementDisplayVisibility;
 /** @internal */
-export function ensureElementPositionAbsolute(element: HTMLElement): void {
+function ensureElementPositionAbsolute(element) {
     const absolutePosition = 'absolute';
     if (element.style.position !== absolutePosition) {
         element.style.position = absolutePosition;
     }
 }
-
+exports.ensureElementPositionAbsolute = ensureElementPositionAbsolute;
 /**
  * Replacement for JQuery $.extend(target, obj)
  * @internal
 */
-export function extend(target: Record<string, unknown>, obj: Record<string, unknown>): Record<string, unknown> {
+function extend(target, obj) {
     for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
             target[key] = obj[key];
@@ -135,12 +131,12 @@ export function extend(target: Record<string, unknown>, obj: Record<string, unkn
     }
     return target;
 }
-
+exports.extend = extend;
 /**
  * Replacement for JQuery $.extend(true, target, obj)
  * @internal
 */
-export function deepExtend(target: Record<string, unknown>, obj: Record<string, unknown> | undefined): Record<string, unknown> {
+function deepExtend(target, obj) {
     if (obj !== undefined) {
         for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
@@ -150,41 +146,47 @@ export function deepExtend(target: Record<string, unknown>, obj: Record<string, 
             }
         }
     }
-
     return target;
 }
-
+exports.deepExtend = deepExtend;
 /** @internal */
-export function deepExtendValue(existingTarget: unknown, value: unknown): unknown {
+function deepExtendValue(existingTarget, value) {
     if (typeof value !== 'object') {
         return value;
-    } else {
+    }
+    else {
         if (Array.isArray(value)) {
             const length = value.length;
-            const targetArray = new Array<unknown>(length);
+            const targetArray = new Array(length);
             for (let i = 0; i < length; i++) {
                 const element = value[i];
                 targetArray[i] = deepExtendValue({}, element);
             }
             return targetArray;
-        } else {
+        }
+        else {
             if (value === null) {
                 return null;
-            } else {
-                const valueObj = value as Record<string, unknown>;
+            }
+            else {
+                const valueObj = value;
                 if (existingTarget === undefined) {
                     return deepExtend({}, valueObj); // overwrite
-                } else {
+                }
+                else {
                     if (typeof existingTarget !== "object") {
                         return deepExtend({}, valueObj); // overwrite
-                    } else {
+                    }
+                    else {
                         if (Array.isArray(existingTarget)) {
                             return deepExtend({}, valueObj); // overwrite
-                        } else {
+                        }
+                        else {
                             if (existingTarget === null) {
                                 return deepExtend({}, valueObj); // overwrite
-                            } else {
-                                const existingTargetObj = existingTarget as Record<string, unknown>;
+                            }
+                            else {
+                                const existingTargetObj = existingTarget;
                                 return deepExtend(existingTargetObj, valueObj); // merge
                             }
                         }
@@ -194,34 +196,36 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
         }
     }
 }
-
+exports.deepExtendValue = deepExtendValue;
 /** @internal */
-export function removeFromArray<T>(item: T, array: T[]): void {
+function removeFromArray(item, array) {
     const index = array.indexOf(item);
-
     if (index === -1) {
         throw new Error('Can\'t remove item from array. Item is not in the array');
     }
-
     array.splice(index, 1);
 }
-
+exports.removeFromArray = removeFromArray;
 /** @internal */
-export function getUniqueId(): string {
+function getUniqueId() {
     return (Math.random() * 1000000000000000)
         .toString(36)
         .replace('.', '');
 }
-
+exports.getUniqueId = getUniqueId;
 /** @internal */
-export function getErrorMessage(e: unknown): string {
+function getErrorMessage(e) {
     if (e instanceof Error) {
         return e.message;
-    } else {
+    }
+    else {
         if (typeof e === 'string') {
             return e;
-        } else {
+        }
+        else {
             return 'Unknown Error';
         }
     }
 }
+exports.getErrorMessage = getErrorMessage;
+//# sourceMappingURL=utils.js.map

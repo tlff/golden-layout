@@ -9,6 +9,13 @@ export function pixelsToNumber(value) {
 }
 /** @internal */
 export function splitStringAtFirstNonNumericChar(value) {
+    if (typeof value !== 'string') {
+        // 非字符串时打 warn 并返回空结果，让上层走"无效数字"路径（parseSize 会抛 ConfigurationError），
+        // 而不是直接 TypeError 中断整个布局。
+        // 常见诱因：后端下发的 config.size 字段缺失或类型不对（例如 number 而非 string、字段为 undefined）。
+        console.warn('[golden-layout] splitStringAtFirstNonNumericChar expected string, got', value === undefined ? 'undefined' : typeof value, value);
+        return { numericPart: '', firstNonNumericCharPart: '' };
+    }
     value = value.trimStart();
     const length = value.length;
     if (length === 0) {
