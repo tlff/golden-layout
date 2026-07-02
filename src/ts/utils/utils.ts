@@ -105,13 +105,13 @@ export function setElementDisplayVisibility(element: HTMLElement, visible: boole
         element.style.removeProperty('left');
         element.style.removeProperty('top');
         element.style.removeProperty('pointer-events');
-        element.style.removeProperty('visibility');
+        // element.style.removeProperty('visibility');
     } else {
         element.style.position = 'absolute';
         element.style.left = '-99999px';
         element.style.top = '-99999px';
         element.style.pointerEvents = 'none';
-        element.style.visibility = 'hidden';
+        // element.style.visibility = 'hidden';
     }
 }
 

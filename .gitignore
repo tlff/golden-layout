@@ -12,3 +12,4 @@ debug.log
 /apitest/out-tsc
 /temp
 /test/dist
+/dist
