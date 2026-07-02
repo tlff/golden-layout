@@ -831,6 +831,14 @@ var PopoutLayoutConfig;
 })(PopoutLayoutConfig = exports.PopoutLayoutConfig || (exports.PopoutLayoutConfig = {}));
 /** @internal */
 function parseSize(sizeString, allowableSizeUnits) {
+    if (typeof sizeString !== 'string') {
+        // 后端下发的 config.size 字段可能是 number（例如 1 而非 "1"）或 undefined。
+        // 这里只做类型归一化、不补单位 —— 让下游 splitStringAtFirstNonNumericChar / SizeUnitEnum.tryParse
+        // 按照原本的语义给出明确的 ConfigurationError（例如 "Unknown unit"），便于排查配置问题，
+        // 而不是被 TypeError 整条调用链炸断。
+        console.warn('[golden-layout] parseSize expected string size, got', sizeString === undefined ? 'undefined' : typeof sizeString, sizeString);
+        sizeString = String(sizeString);
+    }
     const { numericPart: digitsPart, firstNonNumericCharPart: firstNonDigitPart } = (0, utils_1.splitStringAtFirstNonNumericChar)(sizeString);
     const size = Number.parseInt(digitsPart, 10);
     if (isNaN(size)) {
