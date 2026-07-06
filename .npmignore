@@ -1,2 +1,32 @@
 typings
 npm-debug.log*
+
+# 构建中间产物
+tsconfig.*.json
+tsconfig.base.json
+api-extractor.json
+karma.conf.js
+
+# 测试与开发资源
+test/
+apitest/
+doc/
+docs/
+website/
+
+# 源码映射与文档生成
+temp/
+golden-layout-2.6.0.tgz
+
+# 依赖
+node_modules/
+
+# 脚本与构建配置
+scripts/
+etc/
+
+# 其他
+.idea/
+.vscode/
+*.log
+.DS_Store

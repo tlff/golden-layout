@@ -1,7 +1,7 @@
 {
-  "name": "golden-layout",
-  "version": "2.6.0",
-  "description": "A multi-screen javascript Layout manager",
+  "name": "golden-layout-bit",
+  "version": "2.6.1",
+  "description": "A multi-screen javascript Layout manager (fork of golden-layout with bug fixes)",
   "keywords": [
     "docking",
     "javascript",
@@ -12,14 +12,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/golden-layout/golden-layout.git"
+    "url": "https://github.com/tlff/golden-layout.git"
   },
-  "homepage": "https://github.com/golden-layout/golden-layout",
+  "homepage": "https://github.com/tlff/golden-layout",
   "bugs": {
-    "url": "https://github.com/golden-layout/golden-layout/issues"
+    "url": "https://github.com/tlff/golden-layout/issues"
   },
   "license": "MIT",
-  "author": "Golden Layout community",
+  "author": "tlff",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "typings": "dist/types/index.d.ts",
